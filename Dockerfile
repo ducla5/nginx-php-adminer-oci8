@@ -1,4 +1,4 @@
-FROM php:7-fpm
+FROM php:7.1-fpm
 
 # install nginx
 
@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     wget \
     alien \
     libaio1 \
-    php-pear \
     supervisor \
     g++ \
     vim \
@@ -17,8 +16,6 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libmcrypt-dev \
-    libpng12-dev \
     libmcrypt-dev \
     libicu-dev \
     libsqlite3-dev \
@@ -41,7 +38,7 @@ RUN rm -r -f /oracle-client/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.r
 ENV LD_LIBRARY_PATH /usr/lib/oracle/12.1/client64/lib/
 ENV PKG_CONFIG_PATH /oracle-client/
 
-RUN echo 'instantclient,/usr/lib/oracle/12.1/client64/lib/' | pecl install oci8
+RUN echo 'instantclient,/usr/lib/oracle/12.1/client64/lib/' | pecl install oci8 mongodb
 
 
 RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr,12.1 \
@@ -55,7 +52,7 @@ RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr,12.1 \
         mysqli \
         pdo_oci \
     && docker-php-ext-enable \
-        oci8
+    oci8 mongodb
 
 COPY default.conf /etc/nginx/sites-enabled/default
 
